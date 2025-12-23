@@ -1,0 +1,82 @@
+.product-card {
+  overflow: hidden;
+  border-radius: 16px;
+  max-width: 230px;
+  margin: 0 auto;
+  transition: all 0.3s ease-in-out;
+}
+
+.product-card:hover {
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-img {
+  height: 200px !important;
+  object-fit: cover;
+  border-radius: 14px 14px 0 0;
+}
+
+/* 🌸 Beautiful "Sold Out" flower-style badge */
+.sold-out-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: radial-gradient(circle at center, #ff4e4e 0%, #ff0000 90%);
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 50%;
+  transform: rotate(-15deg);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 🔘 Quantity Buttons */
+.qty-btn {
+  border: none;
+  background-color: #ff4e4e;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.qty-btn:hover {
+  background-color: #e43c3c;
+}
+
+/* Disabled state */
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .product-card {
+    max-width: 180px;
+  }
+
+  .product-img {
+    height: 120px;
+  }
+
+  .sold-out-badge {
+    font-size: 0.65rem;
+    padding: 5px 8px;
+  }
+}
+.wishlist-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.wishlist-icon:hover {
+  transform: scale(1.1);
+}
+
+

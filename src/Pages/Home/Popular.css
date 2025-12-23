@@ -1,0 +1,128 @@
+.popular-section {
+  background: linear-gradient(135deg, #fff7f7 0%, #f0f4ff 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.popular-img {
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.qty-btn {
+  border: none;
+  background: #ff416c;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.qty-btn:hover {
+  background: #ff4b2b;
+}
+
+/* ✅ Carousel Buttons */
+.carousel-btn {
+  position: absolute;
+  top: 45%;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-size: 2rem;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-btn:hover {
+  background: rgba(255, 64, 64, 0.7);
+}
+
+.carousel-btn.left {
+  left: 10px;
+}
+
+.carousel-btn.right {
+  right: 10px;
+}
+
+/* ✅ Responsive */
+@media (max-width: 768px) {
+  .popular-img {
+    height: 180px;
+  }
+
+  .carousel-btn {
+    font-size: 1.5rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .text-gradient {
+    font-size: 1.8rem !important;
+  }
+}
+
+.popular-section {
+  background-color: #fff;
+}
+
+.small-card {
+  width: 90%;
+  margin: 0 auto;
+  max-width: 240px;
+  transition: all 0.3s ease-in-out;
+}
+
+.popular-img {
+  height: 200px !important;
+  object-fit: cover;
+}
+
+/* 🌸 Flower-style Sold Out Badge */
+.sold-out-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: radial-gradient(circle at center, #ff4e4e 0%, #ff0000 90%);
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 50%;
+  transform: rotate(-15deg);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons */
+.qty-btn {
+  border: none;
+  background-color: #ff4e4e;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.qty-btn:hover {
+  background-color: #e43c3c;
+}
+
+.btn[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+

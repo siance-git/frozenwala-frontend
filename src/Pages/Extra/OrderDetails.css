@@ -1,0 +1,157 @@
+/* Page background with gradient */
+.order-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fef3c7, #fff, #fde68a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 20px;
+}
+
+/* Card container */
+.order-container {
+  width: 100%;
+  max-width: 650px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Header */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #1f2937;
+}
+
+.order-header h1 {
+  font-size: 2rem;
+  color: #f97316;
+  font-weight: 700;
+}
+
+.order-header span {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* Status */
+.order-status {
+  text-align: center;
+  margin: 15px 0;
+  font-size: 1.1rem;
+  color: #374151;
+  animation: fadeUp 1s ease-in-out;
+}
+
+/* Customer info */
+.order-customer {
+  margin-bottom: 20px;
+  color: #374151;
+}
+
+.from-title {
+  color: #f97316;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.store-name {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Bill section */
+.bill-section {
+  background: #fff7ed;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.15);
+  transition: transform 0.3s;
+}
+
+.bill-section:hover {
+  transform: scale(1.01);
+}
+
+.bill-section h2 {
+  color: #f97316;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.bill-item, .bill-summary {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.bill-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* Button */
+.btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.btn-container button {
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  color: white;
+  padding: 12px 35px;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+}
+
+.btn-container button:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(90deg, #fb923c, #f97316);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .order-container {
+    padding: 20px;
+  }
+
+  .order-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .bill-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .btn-container button {
+    width: 100%;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

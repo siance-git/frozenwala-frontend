@@ -1,0 +1,79 @@
+/* SignupCardOverlay.css */
+
+.signupcard-overlay-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Background blur + dark opacity */
+.signupcard-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px); /* This creates the blur effect */
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Card itself */
+.signupcard-overlay-card {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  max-width: 420px;
+  width: 90%;
+  z-index: 2;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.signupcard-overlay-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #555;
+  cursor: pointer;
+}
+
+.signupcard-overlay-close:hover {
+  color: #000;
+}
+
+/* Title & text */
+.signupcard-overlay-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.signupcard-overlay-text {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+/* Button */
+.signupcard-overlay-button {
+  background-color: #1d4ed8; /* blue */
+  color: #fff;
+  padding: 12px 28px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.signupcard-overlay-button:hover {
+  background-color: #153eaf; /* darker blue */
+}

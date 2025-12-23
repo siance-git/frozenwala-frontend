@@ -1,0 +1,64 @@
+.how-it-works-section {
+  background: linear-gradient(135deg, #eef3ff 0%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Card styling */
+.how-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 100%;
+  max-width: 260px;
+}
+
+.how-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Icons */
+.shadow-icon {
+  transition: transform 0.3s ease;
+}
+
+.how-card:hover .shadow-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Typography */
+.how-it-works-section h5 {
+  font-weight: 700;
+}
+
+.how-it-works-section p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ✅ Responsive adjustments */
+@media (max-width: 768px) {
+  .how-card {
+    max-width: 80%;
+  }
+
+  .how-it-works-section h5 {
+    font-size: 1.6rem !important;
+  }
+
+  .how-it-works-section p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .how-it-works-section {
+    padding: 3rem 1rem;
+  }
+
+  .how-card {
+    max-width: 100%;
+    padding: 1.2rem;
+  }
+}
