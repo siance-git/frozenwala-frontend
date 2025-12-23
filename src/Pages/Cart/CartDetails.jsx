@@ -163,8 +163,10 @@ function CartDetails() {
                       width: "100px",
                       height: "100px",
                       objectFit: "cover",
+                      cursor: "pointer",
                     }}
                     whileHover={{ scale: 1.05 }}
+                    onClick={() => navigate(`/products/${item.product_id}`)}
                   />
 
                   <div className="flex-grow-1 px-3">

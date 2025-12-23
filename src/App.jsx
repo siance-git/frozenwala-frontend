@@ -1,5 +1,6 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import Home from "./Pages/Home";
 import Login from "./Pages/Auth/Login";
 import "./assets/css/theme.css";
@@ -25,6 +26,32 @@ import WishlistPage from "./Pages/Home/WishlistPage.jsx";
 import ProductDetails from "./Pages/Extra/ProductDetails.jsx";
 import { Demo } from "./Pages/Demo.jsx";
 
+const AuthRedirect = ({ children }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  return children;
+};
+
+const RequireAuth = ({ children }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  return children;
+};
+
 function App() {
   return (
     <Router>
@@ -32,21 +59,21 @@ function App() {
         <Route path="/" element={<Home />} />
          {/* <Route path="/demo" element={<Demo />} /> */}
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/loginotp" element={<LoginOTP />} />
-        <Route path="/signupotp" element={<Signupotp />} />
+        <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
+        <Route path="/signup" element={<AuthRedirect><Signup /></AuthRedirect>} />
+        <Route path="/loginotp" element={<AuthRedirect><LoginOTP /></AuthRedirect>} />
+        <Route path="/signupotp" element={<AuthRedirect><Signupotp /></AuthRedirect>} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/products" element={<Product />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/menu" element={<Menu />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/cart" element={<CartDetails />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/orderdone" element={<OrderDone />} />
-        <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/orderdetails/:orderId" element={<OrderDetails />} />
-        <Route path="/terms" element={<Terms />} />
+        <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+        <Route path="/cart" element={<RequireAuth><CartDetails /></RequireAuth>} />
+        <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
+        <Route path="/orderdone" element={<RequireAuth><OrderDone /></RequireAuth>} />
+        <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
+        <Route path="/orderdetails/:orderId" element={<RequireAuth><OrderDetails /></RequireAuth>} />
+        <Route path="/wishlist" element={<RequireAuth><WishlistPage /></RequireAuth>} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/refund" element={<Refund />} />
         <Route path="/about" element={<AboutUs />} />

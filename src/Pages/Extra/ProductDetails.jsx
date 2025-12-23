@@ -18,7 +18,7 @@
 //   const [cartItems, setCartItems] = useState({});
 //   const [stock, setStock] = useState({});
   
-//   const [selectedImage, setSelectedImage] = useState("");
+//   const [itemMedia, setItemMedia] = useState("");
 //   const [comment, setComment] = useState("");
 //   const [reviews, setReviews] = useState([]);
 
@@ -37,9 +37,9 @@
 //         setProduct(data.product);
 
 //         if (data.product.image_gallery && data.product.image_gallery.length > 0) {
-//           setSelectedImage(data.product.image_gallery[0].image_path);
+//           setItemMedia(data.product.image_gallery[0].image_path);
 //         } else if (data.product.item_photo) {
-//           setSelectedImage(data.product.item_photo);
+//           setItemMedia(data.product.item_photo);
 //         }
 
 //         getCartItems();
@@ -247,7 +247,7 @@
 //         <div className="product-gallery" style={{ display: "flex", gap: "30px" }}>
 //           <div className="main-image-container">
 //             <img 
-//               src={selectedImage || product.item_photo} 
+//               src={itemMedia || product.item_photo} 
 //               alt={product.title}
 //               className="main-product-image"
 //               style={{width:"100%"}}
@@ -409,7 +409,8 @@ const ProductDetails = ({ refreshCart }) => {
   const [cartItems, setCartItems] = useState({});
   const [stock, setStock] = useState({});
   
-  const [selectedImage, setSelectedImage] = useState("");
+  const [itemMedia, setItemMedia] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -436,11 +437,14 @@ const ProductDetails = ({ refreshCart }) => {
         const data = await response.json();
         setProduct(data.product);
 
-        if (data.product.image_gallery && data.product.image_gallery.length > 0) {
-          setSelectedImage(data.product.image_gallery[0].image_path);
-        } else if (data.product.item_photo) {
-          setSelectedImage(data.product.item_photo);
-        }
+        // if (data.product.image_gallery && data.product.image_gallery.length > 0) {
+        //   setItemMedia(data.product.image_gallery[0].image_path);
+        // } else if (data.product.item_photo) {
+        //   setItemMedia(data.product.item_photo);
+        // }
+        const itemMediaFiles = [{"media_path": data.product.item_photo, "media_type": "image"}, ...data.product.image_gallery];
+        setItemMedia(itemMediaFiles);
+        setCurrentImageIndex(0);
 
         getCartItems();
         getStock();
@@ -615,7 +619,7 @@ const ProductDetails = ({ refreshCart }) => {
   const handleSubmitReview = async () => {
     if (!uid) {
       toast.error("Please login to submit a review");
-      navigate("/login");
+      navigate("/login/?next=" + window.location.pathname);
       return;
     }
     
@@ -833,6 +837,8 @@ const ProductDetails = ({ refreshCart }) => {
     );
   };
 
+  console.log("itemMedia:", itemMedia);
+
   return (
     <>
       <Navber />
@@ -844,24 +850,102 @@ const ProductDetails = ({ refreshCart }) => {
           <FiArrowLeft />
           <span className="back-text">Back</span>
         </button>
-        <div className="product-gallery" style={{ display: "flex", gap: "30px" }}>
-          <div className="main-image-container">
-            {/* <img 
-              src={selectedImage || product.item_photo} 
-              alt={product.title}
-              className="main-product-image"
-              style={{width:"100%"}}
-            /> */}
-            <img
-  src={selectedImage || product.item_photo || "/static/media/Frozenwala.64cfb841942d8e858c13.png"}
-  alt={product.title}
-  className="main-product-image"
-  style={{ width: "100%" }}
-  onError={(e) => { e.target.src = "/static/media/Frozenwala.png"; }}
-/>
-
+        <div className="product-gallery" style={{ display: "flex", flexDirection: "column", gap: "30px", alignItems: "center" }}>
+          <div className="main-image-container" style={{ position: "relative" }}>
+            {itemMedia[currentImageIndex]?.media_type === 'video' ? (
+              <video
+                src={itemMedia[currentImageIndex]?.media_path}
+                controls
+                style={{ width: "400px", height: "400px", objectFit: "contain", borderRadius: "8px" }}
+              />
+            ) : (
+              <img
+                src={itemMedia[currentImageIndex]?.media_path || product.item_photo || "/static/media/Frozenwala.64cfb841942d8e858c13.png"}
+                alt={product.title}
+                className="main-product-image"
+                style={{ width: "400px", height: "400px", objectFit: "contain", borderRadius: "8px" }}
+                onError={(e) => { e.target.src = "/static/media/Frozenwala.png"; }}
+              />
+            )}
+            {itemMedia.length > 1 && (
+              <>
+                <button
+                  onClick={() => setCurrentImageIndex((prev) => (prev - 1 + itemMedia.length) % itemMedia.length)}
+                  style={{
+                    position: "absolute",
+                    left: "-50px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    cursor: "pointer",
+                    fontSize: "20px"
+                  }}
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={() => setCurrentImageIndex((prev) => (prev + 1) % itemMedia.length)}
+                  style={{
+                    position: "absolute",
+                    right: "-50px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    cursor: "pointer",
+                    fontSize: "20px"
+                  }}
+                >
+                  ›
+                </button>
+              </>
+            )}
+          {itemMedia.length > 1 && (
+            <div className="thumbnails" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '400px' }}>
+              {itemMedia.map((media, index) => (
+                media.media_type === 'video' ? (
+                  <video
+                    key={index}
+                    src={media.media_path}
+                    style={{
+                      width: '70px',
+                      height: '70px',
+                      objectFit: 'cover',
+                      cursor: 'pointer',
+                      border: index === currentImageIndex ? '3px solid #F17228' : '3px solid transparent',
+                      borderRadius: '6px'
+                    }}
+                    onClick={() => setCurrentImageIndex(index)}
+                  />
+                ) : (
+                  <img
+                    key={index}
+                    src={media.media_path || "/static/media/Frozenwala.64cfb841942d8e858c13.png"}
+                    alt={`Thumbnail ${index + 1}`}
+                    style={{
+                      width: '70px',
+                      height: '70px',
+                      objectFit: 'cover',
+                      cursor: 'pointer',
+                      border: index === currentImageIndex ? '3px solid #F17228' : '3px solid transparent',
+                      borderRadius: '6px'
+                    }}
+                    onClick={() => setCurrentImageIndex(index)}
+                  />
+                )
+              ))}
+            </div>
+          )}
           </div>
-
         </div>
 
         <motion.div

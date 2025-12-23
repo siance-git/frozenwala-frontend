@@ -57,7 +57,7 @@ const OrderHistory = () => {
           marginBottom: "20px",
         }}
       >
-        <button
+        {/* <button
           onClick={() => navigate(-1)}
           style={{
             backgroundColor: "#fff",
@@ -69,7 +69,7 @@ const OrderHistory = () => {
           }}
         >
           👈 Go Back
-        </button>
+        </button> */}
         <h1 style={{ flex: 1, textAlign: "center", fontSize: "1.5rem", margin: "10px 0" }}>
           Order History
         </h1>

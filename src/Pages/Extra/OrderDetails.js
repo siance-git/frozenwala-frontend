@@ -92,7 +92,7 @@ const OrderDetails = () => {
   return (
     <div className="order-wrapper">
               <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/profile/?tab=2")}
           style={{
             backgroundColor: "#fff",
             borderRadius: "10px",

@@ -74,7 +74,9 @@ const WishlistPage = () => {
                   objectFit: "cover",
                   borderTopLeftRadius: "0.5rem",
                   borderTopRightRadius: "0.5rem",
+                  cursor: "pointer",
                 }}
+                onClick={() => navigate(`/products/${product.id}`)}
               />
 
               <Card.Body className="d-flex flex-column justify-content-between">

@@ -140,6 +140,13 @@ const Sidebar = ({ activeButton, onButtonClick }) => {
     { id: 3, label: "Log Out" },
     { id: 4, label: "Wallet Transactions" },
   ];
+
+  useEffect(() => {
+    const tab = window.location.href.split("?").length > 1 ? window.location.href.split("?")[1].split("=")[1] : null;
+    if (tab) {
+      onButtonClick(parseInt(tab));
+    }
+  }, []);
   
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState("");

@@ -66,7 +66,15 @@ function LoginOTP() {
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("wallet", response.data.wallet);
       toast.success("Login successfully!");
-      navigate("/", { replace: true });
+      const nextNav = window.location.href.split("?")[window.location.href.split("?").length - 1];
+        // navigate(`/loginotp/${nextNav ? "?next=" + nextNav.replaceAll("next=", "") : ""}`, { state: { phone } });
+      if (nextNav && !nextNav.includes("next")) {
+        navigate("/", { replace: true });
+      }
+      else{
+        const redirectPath = nextNav.replaceAll("next=", "");
+        navigate(redirectPath, { replace: true });
+      }
       window.location.reload();
     } catch (error) {
       setLoading(false);

@@ -195,7 +195,7 @@ const WalletTransactions = () => {
           marginBottom: "25px",
         }}
       >
-        <motion.button
+        {/* <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate(-1)}
@@ -214,7 +214,7 @@ const WalletTransactions = () => {
           }}
         >
           ← Go Back
-        </motion.button>
+        </motion.button> */}
         
         <h1 style={{ 
           flex: 1, 

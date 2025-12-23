@@ -45,7 +45,8 @@ function Login() {
       if (response.data.status === "success") {
         toast.success("OTP sent successfully!");
         // alert("Please remember this OTP for login: " + response.data.otp);
-        navigate("/loginotp", { state: { phone } });
+        const nextNav = window.location.href.split("?")[window.location.href.split("?").length - 1];
+        navigate(`/loginotp/${nextNav && nextNav.includes("next") ? "?next=" + nextNav.replaceAll("next=", "") : ""}`, { state: { phone } });
         setPhone("");
       }
     } catch (error) {
