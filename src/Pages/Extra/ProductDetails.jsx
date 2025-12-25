@@ -426,6 +426,18 @@ const ProductDetails = ({ refreshCart }) => {
   const pageSize = 5; 
 
   useEffect(() => {
+    const pendingReview = localStorage.getItem("pending_review");
+    if (pendingReview) {
+      const { id: pendingId, rating: pendingRating, comment: pendingComment } = JSON.parse(pendingReview);
+      if (pendingId === id) {
+        setRating(pendingRating);
+        setComment(pendingComment);
+      }
+    }
+    localStorage.removeItem("pending_review");
+  }, []);
+
+  useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
@@ -618,6 +630,9 @@ const ProductDetails = ({ refreshCart }) => {
 
   const handleSubmitReview = async () => {
     if (!uid) {
+      if (rating > 0 || comment.trim() !== ""){
+        localStorage.setItem("pending_review", JSON.stringify({ id, rating, comment }));
+      }
       toast.error("Please login to submit a review");
       navigate("/login/?next=" + window.location.pathname);
       return;
@@ -836,8 +851,6 @@ const ProductDetails = ({ refreshCart }) => {
       </div>
     );
   };
-
-  console.log("itemMedia:", itemMedia);
 
   return (
     <>

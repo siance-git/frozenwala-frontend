@@ -39,24 +39,27 @@ function Popular({ refreshCart }) {
       setGetProduct(popularData);
       console.log("popular items : ", popularData);
 
+      try{
+        const stockRes = await axios.get(`https://backend.frozenwala.com/api/stock/`);
+        const stockMap = {};
+        if (stockRes.data && Array.isArray(stockRes.data)) {
+          stockRes.data.forEach((item) => (stockMap[item.item_id] = item.openingstock));
+          setStock(stockMap);
+        }
+      }
+      catch(stockErr){
+        console.error("Error fetching stock data:", stockErr);
+      }
+
       // Only fetch cart and stock if user is logged in
       if (accessToken && uid) {
         try {
-          const [cartRes, stockRes] = await Promise.all([
-            Api.get(`api/get_cart/?user_id=${uid}`),
-            await axios.get(`https://backend.frozenwala.com/api/stock/`)
-          ]);
+          const cartRes = await Api.get(`api/get_cart/?user_id=${uid}`);
 
           const cartMap = {};
           if (cartRes.data && Array.isArray(cartRes.data)) {
             cartRes.data.forEach((item) => (cartMap[item.product_id] = item.quantity));
             setCartItems(cartMap);
-          }
-
-          const stockMap = {};
-          if (stockRes.data && Array.isArray(stockRes.data)) {
-            stockRes.data.forEach((item) => (stockMap[item.item_id] = item.openingstock));
-            setStock(stockMap);
           }
         } catch (authError) {
           console.log("User not logged in or token expired, skipping cart/stock");
@@ -66,6 +69,8 @@ function Popular({ refreshCart }) {
       console.error("Error loading data:", err);
     }
   };
+
+  useEffect(() => {console.log("Stock updated:", stock)}, [stock])
 
   // ✅ Auto slide carousel
   useEffect(() => {
