@@ -432,9 +432,11 @@ const ProductDetails = ({ refreshCart }) => {
       if (pendingId === id) {
         setRating(pendingRating);
         setComment(pendingComment);
+        setTimeout(() => {
+          localStorage.removeItem("pending_review");
+        }, 1000);
       }
     }
-    localStorage.removeItem("pending_review");
   }, []);
 
   useEffect(() => {
