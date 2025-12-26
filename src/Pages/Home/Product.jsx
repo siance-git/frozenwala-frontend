@@ -12,6 +12,7 @@ import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useWishlist } from "../../contexts/WishlistContext";
 
 const StyledPagination = styled(Pagination)(() => ({
   "& .MuiPaginationItem-root": {
@@ -37,6 +38,7 @@ const StyledPagination = styled(Pagination)(() => ({
 }));
 
 function Product({ categoryId, refreshCart }) {
+  const { wishlist, toggleWishlist, wishlistLoading } = useWishlist();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState([]);
@@ -49,29 +51,6 @@ function Product({ categoryId, refreshCart }) {
   const [page, setPage] = useState(1);
   const totalPages = Math.ceil(products.length / pageSize);
   const currentData = products.slice((page - 1) * pageSize, page * pageSize);
-
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem("wishlist");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  // 🧡 Toggle Wishlist
-  const toggleWishlist = (product) => {
-    let updatedWishlist = [...wishlist];
-    const exists = updatedWishlist.find((item) => item.id === product.id);
-
-    if (exists) {
-      updatedWishlist = updatedWishlist.filter((item) => item.id !== product.id);
-      // toast.info(`${product.title} removed from wishlist`);
-    } else {
-      updatedWishlist.push(product);
-      // toast.success(`${product.title} added to wishlist`);
-    }
-
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-    window.dispatchEvent(new Event("wishlistUpdated"));
-  };
 
   useEffect(() => {
     getMenu();
@@ -259,7 +238,7 @@ function Product({ categoryId, refreshCart }) {
         >
           {currentData.map((product) => {
             const isSoldOut = stock[product.id] === 0;
-            const isInWishlist = wishlist.some((item) => item.id === product.id);
+            const isInWishlist = wishlist.some((w) => w && w.item && w.item.id === product.id);
 
             return (
               <motion.div
@@ -273,7 +252,7 @@ function Product({ categoryId, refreshCart }) {
 
                   {/* ❤️ Wishlist Icon */}
                   <div
-                    onClick={() => toggleWishlist(product)}
+                    onClick={() => !wishlistLoading && toggleWishlist(product)}
                     style={{
                       position: "absolute",
                       top: "10px",

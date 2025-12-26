@@ -25,6 +25,7 @@ import SearchResults from "./Pages/Home/SearchResults.jsx";
 import WishlistPage from "./Pages/Home/WishlistPage.jsx";
 import ProductDetails from "./Pages/Extra/ProductDetails.jsx";
 import { Demo } from "./Pages/Demo.jsx";
+import { WishlistProvider } from './contexts/WishlistContext';
 
 const AuthRedirect = ({ children }) => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const RequireAuth = ({ children }) => {
 
 function App() {
   return (
+    <WishlistProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -73,7 +75,7 @@ function App() {
         <Route path="/orderdone" element={<RequireAuth><OrderDone /></RequireAuth>} />
         <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
         <Route path="/orderdetails/:orderId" element={<RequireAuth><OrderDetails /></RequireAuth>} />
-        <Route path="/wishlist" element={<RequireAuth><WishlistPage /></RequireAuth>} />
+        <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/refund" element={<Refund />} />
         <Route path="/about" element={<AboutUs />} />
@@ -83,6 +85,7 @@ function App() {
 
       </Routes>
     </Router>
+    </WishlistProvider>
   );
 }
 export default App;

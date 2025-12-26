@@ -9,16 +9,14 @@ import { FaHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { useWishlist } from "../../contexts/WishlistContext";
 
 function Popular({ refreshCart }) {
+  const { wishlist, toggleWishlist, wishlistLoading } = useWishlist();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [getProduct, setGetProduct] = useState([]);
   const [cartItems, setCartItems] = useState({});
   const [stock, setStock] = useState({});
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem("wishlist");
-    return saved ? JSON.parse(saved) : [];
-  });
 
   const itemsPerPage = 3;
   const navigate = useNavigate();
@@ -160,22 +158,6 @@ function Popular({ refreshCart }) {
     }
   };
 
-  // ✅ Toggle Wishlist
-  const toggleWishlist = (product) => {
-    let updatedWishlist = [...wishlist];
-    const exists = updatedWishlist.find((item) => item.id === product.id);
-
-    if (exists) {
-      updatedWishlist = updatedWishlist.filter((item) => item.id !== product.id);
-    } else {
-      updatedWishlist.push(product);
-    }
-
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-    window.dispatchEvent(new Event("wishlistUpdated"));
-  };
-
   return (
     <section className="popular-section py-4 overflow-hidden">
       <div className="container text-center">
@@ -205,7 +187,7 @@ function Popular({ refreshCart }) {
               >
                 {visibleItems[currentSlide]?.map((item) => {
                   const isSoldOut = stock[item.id] === 0;
-                  const isInWishlist = wishlist.some((w) => w.id === item.id);
+                  const isInWishlist = wishlist.some((w) => w && w.item && w.item.id === item.id);
                   const cartQty = cartItems[item.id];
                   const isLoggedIn = localStorage.getItem("access_token");
 
@@ -222,7 +204,7 @@ function Popular({ refreshCart }) {
 
                         {/* ❤️ Wishlist Icon */}
                         <div
-                          onClick={() => toggleWishlist(item)}
+                          onClick={() => !wishlistLoading && toggleWishlist(item)}
                           style={{
                             position: "absolute",
                             top: "15px",

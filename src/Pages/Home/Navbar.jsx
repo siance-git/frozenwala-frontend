@@ -18,10 +18,10 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useWishlist } from "../../contexts/WishlistContext";
 
 function NavbarComponent({ refreshCart }) {
-
-
+  const { wishlist } = useWishlist();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cartValue, setCartValue] = useState("");
@@ -29,37 +29,6 @@ function NavbarComponent({ refreshCart }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false); // ✅ fix toggle issue
-
-
-
-  const [wishlistCount, setWishlistCount] = useState(0);
-
-  // ✅ Load wishlist count on first render
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishlistCount(saved.length);
-  }, []);
-  // console.log("Save", saved)
-
-  // ✅ Listen for custom events (even in same tab)
-  useEffect(() => {
-    const handleWishlistUpdate = () => {
-      const updated = JSON.parse(localStorage.getItem("wishlist")) || [];
-      setWishlistCount(updated.length);
-    };
-
-    // Listen for both storage (other tabs) and custom app event
-    window.addEventListener("storage", handleWishlistUpdate);
-    window.addEventListener("wishlistUpdated", handleWishlistUpdate);
-
-    return () => {
-      window.removeEventListener("storage", handleWishlistUpdate);
-      window.removeEventListener("wishlistUpdated", handleWishlistUpdate);
-    };
-  }, []);
-
-
-
 
   // 🧍 Get user profile
   useEffect(() => {
@@ -244,13 +213,11 @@ function NavbarComponent({ refreshCart }) {
       style={{ padding: "3px" }}
     >
       <FaHeart fontSize="20px" />
-      {wishlistCount > 0 && (
-        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          style={{ fontSize: "0.7rem" }}
-        >
-          {wishlistCount}
-        </span>
-      )}
+      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+        style={{ fontSize: "0.7rem" }}
+      >
+        {wishlist ? wishlist.length : 0}
+      </span>
     </Button>
 
     {/* Cart */}

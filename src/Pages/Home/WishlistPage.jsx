@@ -1,48 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
-import { toast } from "react-toastify";
 import logo from "../../Frozenwala.png";
 import Navber from "./Navbar"
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
+import { useWishlist } from "../../contexts/WishlistContext";
 
 const WishlistPage = () => {
-  const [wishlist, setWishlist] = useState([]);
+  const { wishlist, toggleWishlist, wishlistLoading } = useWishlist();
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishlist(saved);
-  }, []);
-   const navigate = useNavigate();
-
-  const removeFromWishlist = (id) => {
-   
-    const updated = wishlist.filter((item) => item.id !== id);
-    localStorage.setItem("wishlist", JSON.stringify(updated));
-    setWishlist(updated);
-    window.dispatchEvent(new Event("wishlistUpdated"));
-    toast.info("Item removed from wishlist");
-  };
-
-  // if (wishlist.length === 0)
-  //   return (
-      // <Container className="text-center my-5">
-      //   <h4>Your wishlist is empty ❤️</h4>
-      //   <Button
-      //     variant="primary"
-      //     className="mt-3"
-      //     onClick={() => navigate("/")}
-      //   >
-      //     Go Shopping
-      //   </Button>
-      // </Container>
-  //   );
+  const navigate = useNavigate();
 
   return (
     <>
@@ -63,12 +36,12 @@ const WishlistPage = () => {
       </div>
       <Row>
         {wishlist && wishlist.length > 0 ? wishlist.map((product) => (
-          <Col md={3} sm={6} xs={12} key={product.id} className="mb-4">
+          <Col md={3} sm={6} xs={12} key={product.item.id} className="mb-4">
             <Card className="h-100 shadow-sm border-0">
               <Card.Img
                 variant="top"
-                src={product.item_photo || logo}
-                alt={product.title}
+                src={product.item.item_photo || logo}
+                alt={product.item.title}
                 style={{
                   height: "180px",
                   objectFit: "cover",
@@ -76,7 +49,7 @@ const WishlistPage = () => {
                   borderTopRightRadius: "0.5rem",
                   cursor: "pointer",
                 }}
-                onClick={() => navigate(`/products/${product.id}`)}
+                onClick={() => navigate(`/products/${product.item.id}`)}
               />
 
               <Card.Body className="d-flex flex-column justify-content-between">
@@ -93,12 +66,12 @@ const WishlistPage = () => {
                     color: "#333",
                   }}
                 >
-                  {product.title}
+                  {product.item.title}
                 </div>
 
                 <Card.Text className="fw-semibold mt-2 ">
-                  <span className="text-danger">₹{product.item_new_price}</span>
-                  <span className="old-price" style={{ textDecoration: 'line-through', color: '#999', fontSize: '18px', marginLeft: '10px' }}>₹{product.item_old_price}</span>
+                  <span className="text-danger">₹{product.item.item_new_price}</span>
+                  <span className="old-price" style={{ textDecoration: 'line-through', color: '#999', fontSize: '18px', marginLeft: '10px' }}>₹{product.item.item_old_price}</span>
                   <span className="discount-badge" style={{ 
                     backgroundColor: '#F17228', 
                     color: 'white', 
@@ -108,7 +81,7 @@ const WishlistPage = () => {
                     marginLeft: '10px',
                     fontWeight: 'bold'
                   }}>
-                    {product.discount_percentage}% OFF
+                    {product.item.discount_percentage}% OFF
                   </span>
                 </Card.Text>
 
@@ -117,7 +90,7 @@ const WishlistPage = () => {
                     variant="warning"
                     size="sm"
                     onClick={() =>
-                      navigate(`/products/${product.id}`)
+                      navigate(`/products/${product.item.id}`)
                     }
                   >
                     Details
@@ -127,7 +100,7 @@ const WishlistPage = () => {
                     variant="outline-danger"
                     size="sm"
                     style={{ color: "black" }}
-                    onClick={() => removeFromWishlist(product.id)}
+                    onClick={() => !wishlistLoading && toggleWishlist(product.item)}
                   >
                     Remove
                   </Button>
