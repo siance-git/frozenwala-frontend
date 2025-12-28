@@ -57,6 +57,7 @@ export const WishlistProvider = ({ children }) => {
   const fetchWishlist = async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
+      localStorage.removeItem("wishlist");
       try {
         const wishlistRes = await api.get("api/wishlist/");
         setWishlist(wishlistRes.data);
