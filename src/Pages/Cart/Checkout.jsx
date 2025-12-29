@@ -20,10 +20,24 @@ const CheckoutPage = () => {
 
   // STATES
   const [deliveryOption, setDeliveryOption] = useState("delivery");
-  const [selectedPickup, setSelectedPickup] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedPickup, setSelectedPickup] = useState("Within 1hr");
+  const [selectedOption, setSelectedOption] = useState("Within 1hr");
   const [getProduct, setGetProduct] = useState([]);
-  
+  const [paymentMethod, setPaymentMethod] = useState("online");
+  const [paymentOptions, setPaymentOptions] = useState([]);
+
+  const fetchPaymentOptions = async () =>{
+    try{
+      const response = await Api.get("api/payment-options/");
+      if (response?.data && response?.data?.length > 0) {
+        setPaymentOptions(response?.data);
+      }
+    }
+    catch(error){
+      console.log("Payment options error:", error);
+    }
+  };
+
   // COUPONS
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loadingCoupons, setLoadingCoupons] = useState(false);
@@ -83,6 +97,7 @@ const CheckoutPage = () => {
     getProducts();
     getTotalPrice();
     fetchAvailableCoupons();
+    fetchPaymentOptions();
   }, [pickup]);
 
   useEffect(() => {
@@ -186,8 +201,7 @@ const CheckoutPage = () => {
     ) {
       return alert("Please fill all delivery details.");
     }
-const pick_up = deliveryOption === "delivery" ? 0 : 1;
-console.log("selectedOption : ",selectedOption)
+    const pick_up = deliveryOption === "delivery" ? 0 : 1;
     try {
       const bodyData = {
         user_id: uid,
@@ -206,10 +220,21 @@ console.log("selectedOption : ",selectedOption)
         discounted_price: discount,
         previous_price: previousPrice,
         pick_up: pick_up,
+        payment_method: paymentMethod,
+        payment_option: paymentOptions.find((opt) => opt.code === paymentMethod)?.id || "",
       };
+      
+      console.log("Order Body Data:", bodyData);
 
       const response = await Api.post("api/create_order/", bodyData);
 
+      if (paymentMethod === "cod") {
+        // For COD, directly navigate to success page
+        navigate("/orderdone");
+        return;
+      }
+
+      // For online payment, proceed with Razorpay
       const options = {
         currency: "INR",
         key: razorpayKeyId,
@@ -238,6 +263,11 @@ console.log("selectedOption : ",selectedOption)
     setAddressInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(()=>{
+    setSelectedOption("Within 1hr");
+    setSelectedPickup("Within 1hr");
+  }, [deliveryOption]);
+
   return (
     <>
       <Navbar />
@@ -265,7 +295,7 @@ console.log("selectedOption : ",selectedOption)
 
             {deliveryOption === "delivery" && (
               <div className="address-form">
-                <h4>Add New Address</h4>
+                <h5>Add New Address</h5>
                 {Object.entries(addressInfo).map(([key, val]) => (
                   <input
                     key={key}
@@ -278,38 +308,79 @@ console.log("selectedOption : ",selectedOption)
                 ))}
 
                 <div className="delivery-timing">
-                  <h6>Select Delivery Timing:</h6>
-                  {["Within 1hr", "1-3 hrs"].map((time) => (
-                    <label key={time}>
-                      <input
-                        type="radio"
-                        checked={selectedOption === time}
-                        onChange={() => setSelectedOption(time)}
-                      />
-                      {time}
-                    </label>
-                  ))}
+                  <h5>Select Delivery Timing:</h5>
+                  <div className="timing-options">
+                    {["Within 1hr", "1-3 hrs"].map((time) => (
+                      <label key={time}>
+                        <input
+                          type="radio"
+                          checked={selectedOption === time}
+                          onChange={() => setSelectedOption(time)}
+                        />
+                        {time}
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
-                <button className="pay-btn" onClick={handlePayment}>Proceed to Pay</button>
+                {paymentOptions && paymentOptions?.length > 0 && <div className="payment-method">
+                  <h5>Select Payment Method:</h5>
+                   <div className="payment-options">
+                    {paymentOptions.map((option) => (
+                      <label key={option.value}>
+                        <input
+                          type="radio"
+                          value={option.code}
+                          checked={paymentMethod === option.code}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                        />
+                        {option.display_name}
+                      </label>
+                    ))}
+                  </div>
+                </div>}
+
+                {paymentOptions && paymentOptions?.length > 0 && <button className="pay-btn" onClick={handlePayment}>
+                  {paymentMethod === "cod" ? "Place Order (COD)" : "Proceed to Pay"}
+                </button>}
               </div>
             )}
 
             {deliveryOption === "pickup" && (
               <div className="pickup-form">
-                <h4>Select Pickup Timing</h4>
-                {["Within 1hr", "1hr–3hrs"].map((time) => (
-                  <label key={time}>
-                    <input
-                      type="radio"
-                      checked={selectedPickup === time}
-                      onChange={() => setSelectedPickup(time)}
-                    />
-                    {time}
-                  </label>
-                ))}
+                <h5>Select Pickup Timing</h5>
+                <div className="pickup-timing">
+                  {["Within 1hr", "1hr–3hrs"].map((time) => (
+                    <label key={time}>
+                      <input
+                        type="radio"
+                        checked={selectedPickup === time}
+                        onChange={() => setSelectedPickup(time)}
+                      />
+                      {time}
+                    </label>
+                  ))}
+                </div>
+                {paymentOptions && paymentOptions?.length > 0 && <div className="payment-method">
+                  <h5>Select Payment Method:</h5>
+                   <div className="payment-options">
+                    {paymentOptions.map((option) => (
+                      <label key={option.value}>
+                        <input
+                          type="radio"
+                          value={option.code}
+                          checked={paymentMethod === option.code}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                        />
+                        {option.display_name}
+                      </label>
+                    ))}
+                  </div>
+                </div>}
 
-                <button className="pay-btn" onClick={handlePayment}>Proceed to Pay</button>
+                {paymentOptions && paymentOptions?.length > 0 && <button className="pay-btn" onClick={handlePayment}>
+                  {paymentMethod === "cod" ? "Place Order (COD)" : "Proceed to Pay"}
+                </button>}
               </div>
             )}
           </div>

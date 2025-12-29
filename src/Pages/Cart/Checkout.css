@@ -9,7 +9,14 @@
   transition: all 0.3s ease;
 }
 
-.checkout-card,
+.checkout-card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  padding: 25px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 .checkout-right {
   background: #fff;
   border-radius: 15px;
@@ -19,6 +26,12 @@
   min-width: 300px;
   max-width: 500px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.checkout-left {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
 }
 
 .checkout-card:hover,
@@ -159,6 +172,15 @@ h3, h4 h5{
     margin: 80px 10px;
   }
 
+  .checkout-left,
+  .checkout-right {
+    flex: none;
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    margin-bottom: 20px;
+  }
+
   h3, h4 h5{
     font-size: 1.1rem;
     text-align: center;
@@ -174,6 +196,17 @@ h3, h4 h5{
 }
 
 @media (max-width: 576px) {
+  .checkout-container {
+    margin: 60px 5px;
+    padding: 0 10px;
+  }
+
+  .checkout-left,
+  .checkout-right,
+  .checkout-card {
+    padding: 15px;
+  }
+
   h3, h4 h5{
     font-size: 1rem;
   }
@@ -191,6 +224,44 @@ h3, h4 h5{
 
   .summary-totals p, .summary-totals h5 {
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-container {
+    margin: 40px 5px;
+    gap: 15px;
+  }
+
+  .checkout-left,
+  .checkout-right,
+  .checkout-card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  h3, h4 h5{
+    font-size: 0.9rem;
+  }
+
+  .address-form input,
+  .price-summary input {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+
+  .pay-btn, .apply-btn {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .option-btn {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .summary-totals p, .summary-totals h5 {
+    font-size: 0.85rem;
   }
 }
 
@@ -485,4 +556,34 @@ h3, h4 h5{
 .wallet-remaining {
   color: #666;
   font-size: 14px;
+}
+
+.payment-method {
+  margin: 20px 0;
+}
+
+.payment-method h6 {
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: 600;
+}
+
+.payment-options, .delivery-timing .timing-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.payment-options label, .delivery-timing .timing-options label, .pickup-timing label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.payment-options input[type="radio"], .delivery-timing .timing-options input[type="radio"], .pickup-timing input[type="radio"] {
+  margin: 0;
+  width: auto;
 }

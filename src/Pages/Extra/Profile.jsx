@@ -31,7 +31,7 @@ const App = () => {
               onButtonClick={handleButtonClick}
             />
             <button
-                      onClick={() => navigate(-1)}
+                      onClick={() => navigate("/")}
                       className="back-btn"
                     >
                       <FiArrowLeft />
