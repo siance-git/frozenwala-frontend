@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../Profile/Sidebar";
 import MainContent from "../Profile/MainContent";
 import Navbar from "../Home/Navbar";
@@ -10,6 +10,7 @@ const App = () => {
   const {id} = useParams();
   const [activeButton, setActiveButton] = useState(id ? parseInt(id) : 1);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleButtonClick = (buttonId) => {
     setActiveButton(buttonId);
@@ -19,6 +20,16 @@ const App = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleBack = () => {
+    const previousPath = sessionStorage.getItem("previousPath");
+
+    if (previousPath?.startsWith("/orderdetails")) {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <div>
@@ -31,7 +42,7 @@ const App = () => {
               onButtonClick={handleButtonClick}
             />
             <button
-                      onClick={() => navigate("/")}
+                      onClick={handleBack}
                       className="back-btn"
                     >
                       <FiArrowLeft />

@@ -26,6 +26,7 @@ import WishlistPage from "./Pages/Home/WishlistPage.jsx";
 import ProductDetails from "./Pages/Extra/ProductDetails.jsx";
 import { Demo } from "./Pages/Demo.jsx";
 import { WishlistProvider } from './contexts/WishlistContext';
+import { useLocation } from "react-router-dom";
 
 const AuthRedirect = ({ children }) => {
   const navigate = useNavigate();
@@ -53,10 +54,25 @@ const RequireAuth = ({ children }) => {
   return children;
 };
 
+const RouteTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const prevPath = sessionStorage.getItem("currentPath");
+    if (prevPath) {
+      sessionStorage.setItem("previousPath", prevPath);
+    }
+    sessionStorage.setItem("currentPath", location.pathname);
+  }, [location]);
+
+  return null;
+};
+
 function App() {
   return (
     <WishlistProvider>
     <Router>
+      <RouteTracker />
       <Routes>
         <Route path="/" element={<Home />} />
          {/* <Route path="/demo" element={<Demo />} /> */}

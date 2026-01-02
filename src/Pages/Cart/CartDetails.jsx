@@ -18,6 +18,8 @@ function CartDetails() {
   const [discountPrice, setDiscount] = useState(0);
   const [previousPrice, setPreviousPrice] = useState(0);
   const [walletValue, setWalletValue] = useState(0);
+  const [gstAmount, setGstAmount] = useState(0);
+  const [gstRate, setGstRate] = useState(0);
 
   const [stock, setStock] = useState({});
 
@@ -60,6 +62,8 @@ function CartDetails() {
       setDiscount(response.data.discounted_price);
       setPreviousPrice(response.data.previous_price);
       setWalletValue(response.data.wallet_value);
+      setGstAmount(response.data.total_gst);
+      setGstRate(response.data.gst_rate);
     } catch (error) {
       console.log("Error fetching total price:", error);
     }
@@ -277,6 +281,15 @@ function CartDetails() {
                 <span>Delivery:</span>
                 <strong>₹{deliveryCharge}</strong>
               </div>
+              {
+                gstRate > 0 &&
+                <>
+                  <div className="d-flex justify-content-between">
+                    <span>GST({gstRate}%):</span>
+                    <strong>₹{gstAmount}</strong>
+                  </div>
+                </>
+              }
               <div className="d-flex justify-content-between">
                 <span>Discount:</span>
                 <strong>₹{discountPrice}</strong>
@@ -288,7 +301,7 @@ function CartDetails() {
               <hr />
               <div className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Total Payable:</h5>
-                <h4 className="mb-0 text-success fw-bold">₹{totalPrice}</h4>
+                <h4 className="mb-0 text-success fw-bold">₹{totalPrice.toFixed(2)}</h4>
               </div>
             </div>
             <motion.button

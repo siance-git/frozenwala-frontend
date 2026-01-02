@@ -49,6 +49,13 @@ const CheckoutPage = () => {
   const [discount, setDiscount] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
 
+  // GST STATES
+  const [totalGstAmount, setTotalGstAmount] = useState(0);
+  const [gstPercentage, setGstPercentage] = useState(0);
+  const [cgstAmount, setCgstAmount] = useState(0);
+  const [sgstAmount, setSgstAmount] = useState(0);
+
+
   // WALLET
   const wallet = Number(localStorage.getItem("wallet") || 0);
   const [walletValue, setWalletValue] = useState(0);
@@ -72,9 +79,11 @@ const CheckoutPage = () => {
   });
 
   const calculateFinalPrice = () => {
+    console.log("Calculating final price...", deliveryCharge);
     let price = previousPrice;
 
     if (deliveryCharge >= 0) price += deliveryCharge;
+    if (totalGstAmount >= 0) price += totalGstAmount;
 
     if (couponApply || discount > 0) price -= discount;
 
@@ -101,7 +110,9 @@ const CheckoutPage = () => {
   }, [pickup]);
 
   useEffect(() => {
-    calculateFinalPrice();
+    setTimeout(()=>{
+      calculateFinalPrice();
+    })
   }, [discount, deliveryCharge, walletBalance, walletValue]);
 
   // GET CART PRODUCTS
@@ -147,7 +158,12 @@ const CheckoutPage = () => {
 
       setDeliveryCharge(response.data.delivery_charge);
 
-      setTimeout(() => calculateFinalPrice(), 50);
+      setGstPercentage(response.data.gst_rate || 0);
+      setTotalGstAmount(response.data.total_gst || 0);
+      setCgstAmount(response.data.cgst_amount || 0);
+      setSgstAmount(response.data.sgst_amount || 0);
+
+      // setTimeout(() => calculateFinalPrice(), 50);
     } catch (error) {
       console.error("Price error:", error);
     }
@@ -489,13 +505,75 @@ const CheckoutPage = () => {
             </div>
 
             {/* FINAL PRICE */}
-            <div className="summary-totals">
+            {/* <div className="summary-totals">
               <h4>Price Summary</h4>
               <p>Total Price: ₹{previousPrice}</p>
+              {
+                gstPercentage > 0 &&
+                <>
+                  <p>CGST({gstPercentage/2}%): ₹{cgstAmount}</p>
+                  <p>SGST({gstPercentage/2}%): ₹{sgstAmount}</p>
+                </>
+              }
               <p>Delivery: ₹{deliveryCharge}</p>
               <p>Discount: ₹{discount}</p>
               <p>Wallet Used: ₹{walletValue}</p>
-              <h5>Payable: ₹{finalPrice || previousPrice + deliveryCharge}</h5>
+              <h5>Payable: ₹{finalPrice || previousPrice + deliveryCharge + totalGstAmount}</h5>
+            </div> */}
+            <div className="summary-card">
+              <h4 className="summary-title">Price Summary</h4>
+
+              <div className="summary-row">
+                <span>Total Items Price</span>
+                <span>₹{previousPrice}</span>
+              </div>
+
+              {gstPercentage > 0 && (
+                <>
+                  <div className="summary-row">
+                    <span>CGST ({gstPercentage/2}%)</span>
+                    <span>₹{cgstAmount}</span>
+                  </div>
+
+                  <div className="summary-row">
+                    <span>SGST ({gstPercentage/2}%)</span>
+                    <span>₹{sgstAmount}</span>
+                  </div>
+
+                  <div className="summary-row">
+                    <span>Total GST({gstPercentage}%)</span>
+                    <span>₹{totalGstAmount}</span>
+                  </div>
+
+                  <div className="summary-divider" />
+                </>
+              )}
+
+              <div className="summary-row">
+                <span>Delivery</span>
+                <span>₹{deliveryCharge}</span>
+              </div>
+
+              <div className="summary-row discount">
+                <span>Discount</span>
+                <span>- ₹{discount}</span>
+              </div>
+
+              <div className="summary-row wallet">
+                <span>Wallet Used</span>
+                <span>- ₹{walletValue}</span>
+              </div>
+
+              <div className="summary-divider" />
+
+              <div className="summary-total">
+                <span>Grand Total</span>
+                <span>₹{(finalPrice || previousPrice + deliveryCharge + totalGstAmount).toFixed(2)}</span>
+              </div>
+
+              <p className="summary-note">
+                All prices are inclusive of applicable taxes.
+              </p>
             </div>
           </div>
         </div>

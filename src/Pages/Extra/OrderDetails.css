@@ -126,6 +126,49 @@
   box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
 }
 
+.bill-table {
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.bill-head,
+.bill-row {
+  display: grid;
+  grid-template-columns: 40% 15% 20% 25%;
+  padding: 10px 12px;
+  align-items: center;
+}
+
+.bill-head {
+  font-weight: 600;
+  background: #f6f6f6;
+  border-bottom: 1px solid #ddd;
+}
+
+.bill-row:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+.bill-row p,
+.bill-head p {
+  margin: 0;
+}
+
+.bill-row p:last-child,
+.bill-head p:last-child {
+  text-align: right;
+}
+
+.bill-head p:nth-child(2),
+.bill-row p:nth-child(2),
+.bill-head p:nth-child(3),
+.bill-row p:nth-child(3) {
+  text-align: center;
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .order-container {

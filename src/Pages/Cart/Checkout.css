@@ -587,3 +587,51 @@ h3, h4 h5{
   margin: 0;
   width: auto;
 }
+
+.summary-card {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-top: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+}
+
+.summary-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.summary-row,
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.summary-row span:first-child {
+  color: #666;
+}
+
+.summary-row.discount span,
+.summary-row.wallet span {
+  color: #d32f2f;
+}
+
+.summary-total {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.summary-divider {
+  border-top: 1px dashed #ddd;
+  margin: 10px 0;
+}
+
+.summary-note {
+  font-size: 11px;
+  color: #8a8a8a;
+  margin-top: 10px;
+}
