@@ -83,7 +83,7 @@ const CheckoutPage = () => {
     let price = previousPrice;
 
     if (deliveryCharge >= 0) price += deliveryCharge;
-    if (totalGstAmount >= 0) price += totalGstAmount;
+    // if (totalGstAmount >= 0) price += totalGstAmount;
 
     if (couponApply || discount > 0) price -= discount;
 
@@ -524,7 +524,7 @@ const CheckoutPage = () => {
               <h4 className="summary-title">Price Summary</h4>
 
               <div className="summary-row">
-                <span>Total Items Price</span>
+                <span>Total Items Price((incl GST))</span>
                 <span>₹{previousPrice}</span>
               </div>
 
@@ -568,7 +568,7 @@ const CheckoutPage = () => {
 
               <div className="summary-total">
                 <span>Grand Total</span>
-                <span>₹{(finalPrice || previousPrice + deliveryCharge + totalGstAmount).toFixed(2)}</span>
+                <span>₹{(finalPrice || previousPrice + deliveryCharge).toFixed(2)}</span>
               </div>
 
               <p className="summary-note">

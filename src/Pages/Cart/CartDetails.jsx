@@ -274,7 +274,7 @@ function CartDetails() {
             <h4 className="fw-bold mb-3 text-dark">💰 Price Details</h4>
             <div className="d-flex flex-column gap-2 text-secondary">
               <div className="d-flex justify-content-between">
-                <span>Subtotal:</span>
+                <span>Subtotal(incl GST):</span>
                 <strong>₹{previousPrice}</strong>
               </div>
               <div className="d-flex justify-content-between">
