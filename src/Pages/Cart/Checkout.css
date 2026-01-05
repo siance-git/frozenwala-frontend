@@ -635,3 +635,144 @@ h3, h4 h5{
   color: #8a8a8a;
   margin-top: 10px;
 }
+/* EXISTING ADDRESSES STYLES */
+.existing-addresses-section {
+  margin-bottom: 25px;
+}
+
+.existing-addresses-section h5 {
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+.addresses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.address-card {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 15px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.address-card:hover {
+  border-color: #ff4d00;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(255, 77, 0, 0.1);
+}
+
+.address-card.selected {
+  border-color: #ff4d00;
+  background: #fff5f0;
+  box-shadow: 0 4px 15px rgba(255, 77, 0, 0.15);
+}
+
+.address-radio {
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.address-radio input[type="radio"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #ff4d00;
+}
+
+.address-details {
+  flex: 1;
+}
+
+.address-name {
+  margin: 0 0 3px 0;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.address-phone {
+  margin: 0 0 5px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.address-text {
+  margin: 0;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.add-new-address-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #ff4d00;
+  background: transparent;
+  color: #ff4d00;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.add-new-address-btn:hover {
+  background: #fff5f0;
+}
+
+.new-address-form {
+  margin-bottom: 20px;
+}
+
+.new-address-form h5 {
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+.address-form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.save-address-btn,
+.cancel-address-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.save-address-btn {
+  background: #ff4d00;
+  color: white;
+}
+
+.save-address-btn:hover {
+  background: #e64000;
+}
+
+.cancel-address-btn {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.cancel-address-btn:hover {
+  background: #e8e8e8;
+}

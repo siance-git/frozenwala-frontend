@@ -1,6 +1,6 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Footer() {
 const currentYear = new Date().getFullYear();
@@ -33,9 +33,9 @@ const currentYear = new Date().getFullYear();
               <h5 className="lh-lg fw-bold text-white">COMPANY</h5>
               <ul className="list-unstyled mb-md-4 mb-lg-0">
                 <li className="lh-lg">
-                  <a className="text-200 text-decoration-none" href="#!" onClick={()=>navigate("/about")}>
+                  <Link className="text-200 text-decoration-none" to="/about">
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 {/* <li className="lh-lg">
                   <a className="text-200 text-decoration-none" href="#!">
@@ -43,14 +43,14 @@ const currentYear = new Date().getFullYear();
                   </a>
                 </li> */}
                 <li className="lh-lg">
-                  <a className="text-200 text-decoration-none" href="#!" onClick={()=>navigate("/career")}>
+                  <Link className="text-200 text-decoration-none" to="/career">
                     Careers
-                  </a>
+                  </Link>
                 </li>
                 <li className="lh-lg">
-                  <a className="text-200 text-decoration-none" href="#!" onClick={()=>navigate("/blog")}>
+                  <Link className="text-200 text-decoration-none" to="/blog">
                     Blog
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -59,19 +59,19 @@ const currentYear = new Date().getFullYear();
               <h5 className="lh-lg fw-bold text-white">LEGAL</h5>
               <ul className="list-unstyled mb-md-4 mb-lg-0">
                 <li className="lh-lg">
-                  <a className="text-200 text-decoration-none" href="#!" onClick={()=>navigate("/terms")}>
+                  <Link className="text-200 text-decoration-none" to="/terms">
                     Terms &amp; Conditions
-                  </a>
+                  </Link>
                 </li>
                 <li className="lh-lg">
-                  <a className="text-200 text-decoration-none" href="#!" onClick={()=>navigate("/refund")}>
+                  <Link className="text-200 text-decoration-none" to="/refund">
                     Refund &amp; Cancellation
-                  </a>
+                  </Link>
                 </li>
                 <li className="lh-lg">
-                  <a className="text-200 text-decoration-none" href="#!" onClick={()=>navigate("/privacy")}>
+                  <Link className="text-200 text-decoration-none" to="/privacy">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

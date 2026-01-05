@@ -59,6 +59,7 @@ import MyProfile from "./MyProfile";
 import Logout from "./Logout";
 import OrderHistory from "./OrderHistory";
 import WalletTransactions from "./WalletTransactions";
+import UserQRCode from "./UserQRCode";
 import api, { walletApi } from "../Utills/Api"; // Import wallet API
 
 const MainContent = ({ activeButton }) => {
@@ -128,13 +129,19 @@ const MainContent = ({ activeButton }) => {
             <OrderHistory />
           </div>
         );
-      case 4:
+      case 3:
         return (
           <div>
             <WalletTransactions {...getWalletProps()} />
           </div>
         );
-      case 3:
+      case 4:
+        return (
+          <div>
+            <UserQRCode />
+          </div>
+        );
+      case 5:
         return (
           <div>
             <Logout />

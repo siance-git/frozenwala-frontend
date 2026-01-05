@@ -18,13 +18,11 @@ import Privacy from "./Pages/Footer.js/Privacy";
 import Refund from "./Pages/Footer.js/Refund";
 import AboutUs from "./Pages/Footer.js/AboutUs";
 import OrderDone from "./Pages/Profile/OrderDone.jsx";
-import OrderHistory from "./Pages/Profile/OrderHistory.js";
 import Career from "./Pages/Footer.js/Career.jsx";
 import Blog from "./Pages/Footer.js/Blog.jsx";
 import SearchResults from "./Pages/Home/SearchResults.jsx";
 import WishlistPage from "./Pages/Home/WishlistPage.jsx";
 import ProductDetails from "./Pages/Extra/ProductDetails.jsx";
-import { Demo } from "./Pages/Demo.jsx";
 import { WishlistProvider } from './contexts/WishlistContext';
 import { useLocation } from "react-router-dom";
 
@@ -97,6 +95,7 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/career" element={<Career />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="/wishlist" element={<WishlistPage />} />
 
       </Routes>

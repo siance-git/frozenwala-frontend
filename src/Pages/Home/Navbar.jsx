@@ -24,7 +24,7 @@ function NavbarComponent({ refreshCart }) {
   const { wishlist } = useWishlist();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [cartValue, setCartValue] = useState("");
+  const [cartValue, setCartValue] = useState(0);
   const [name, setName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ function NavbarComponent({ refreshCart }) {
     if (!uid) return;
     try {
       const response = await Api.get(`api/unique-product-count/?user_id=${uid}`);
-      setCartValue(response.data.unique_product_count);
+      setCartValue(parseInt(response.data.unique_product_count));
     } catch (error) {
       console.error("Error fetching cart value:", error);
     }
@@ -213,11 +213,11 @@ function NavbarComponent({ refreshCart }) {
       style={{ padding: "3px" }}
     >
       <FaHeart fontSize="20px" />
-      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+      {wishlist && wishlist.length > 0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
         style={{ fontSize: "0.7rem" }}
       >
-        {wishlist ? wishlist.length : 0}
-      </span>
+        {wishlist.length}
+      </span>}
     </Button>
 
     {/* Cart */}
@@ -228,12 +228,12 @@ function NavbarComponent({ refreshCart }) {
       style={{ padding: "4px" }}
     >
       <FaShoppingCart fontSize="1.4rem" />
-      <span
+      {cartValue > 0 && <span
         className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
         style={{ fontSize: "0.65rem", padding: "4px 6px" }}
       >
         {cartValue}
-      </span>
+      </span>}
     </Button>
   </Nav>
 </BsNavbar.Collapse>

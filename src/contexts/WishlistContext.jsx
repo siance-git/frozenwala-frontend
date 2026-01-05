@@ -6,6 +6,7 @@ const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [itemsPage, setItemsPage] = useState(1);
 
   const toggleWishlist = async (item) => {
     try{
@@ -80,7 +81,9 @@ export const WishlistProvider = ({ children }) => {
     <WishlistContext.Provider value={{ 
       wishlist, 
       toggleWishlist, 
-      wishlistLoading
+      wishlistLoading,
+      itemsPage,
+      setItemsPage
     }}>
       {children}
     </WishlistContext.Provider>

@@ -137,8 +137,9 @@ const Sidebar = ({ activeButton, onButtonClick }) => {
   const buttons = [
     { id: 1, label: "My Profile" },
     { id: 2, label: "Order History" },
-    { id: 3, label: "Log Out" },
-    { id: 4, label: "Wallet Transactions" },
+    { id: 3, label: "Wallet Transactions" },
+    { id: 4, label: "Your QR Code" },
+    { id: 5, label: "Log Out" },
   ];
 
   useEffect(() => {

@@ -25,6 +25,63 @@ const CheckoutPage = () => {
   const [getProduct, setGetProduct] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("online");
   const [paymentOptions, setPaymentOptions] = useState([]);
+  const [addresses, setAddresses] = useState([]);
+
+  const fetchCustomerAddresses = async () => {
+    try {
+      const response = await Api.get(`api/addresses/?user_id=${uid}`);
+      if (response?.data && response?.data?.length > 0) {
+        setAddresses(response?.data);
+      }
+    } catch (error) {
+      console.log("Address fetch error:", error);
+    }
+  };
+
+  const saveNewAddress = async () => {
+    // validation
+    if (
+      !addressInfo.name ||
+      !addressInfo.phone ||
+      !addressInfo.address ||
+      !addressInfo.city ||
+      !addressInfo.state ||
+      !addressInfo.country ||
+      !addressInfo.zip
+    ) {
+      return toast.error("Please fill all address fields");
+    }
+    try {
+      const bodyData = {
+        newname: addressInfo.name,
+        phone: addressInfo.phone,
+        address: addressInfo.address,
+        city: addressInfo.city,
+        state: addressInfo.state,
+        country: addressInfo.country,
+        zip_code: addressInfo.zip,
+        user_id: uid,
+      }
+      const response = await Api.post("api/addresses/", bodyData);
+      if (response?.status === 201) {
+        fetchCustomerAddresses();
+        setShowNewAddressForm(false)
+        setAddressInfo({
+          name: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+          zip: "",
+        });
+        toast.success("Address added successfully");
+      }
+    } catch (error) {
+      console.log("Save address error:", error);
+      toast.error("Failed to add address");
+    }
+  };
 
   const fetchPaymentOptions = async () =>{
     try{
@@ -78,8 +135,10 @@ const CheckoutPage = () => {
     zip: "",
   });
 
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+
   const calculateFinalPrice = () => {
-    console.log("Calculating final price...", deliveryCharge);
     let price = previousPrice;
 
     if (deliveryCharge >= 0) price += deliveryCharge;
@@ -107,6 +166,7 @@ const CheckoutPage = () => {
     getTotalPrice();
     fetchAvailableCoupons();
     fetchPaymentOptions();
+    fetchCustomerAddresses();
   }, [pickup]);
 
   useEffect(() => {
@@ -210,25 +270,26 @@ const CheckoutPage = () => {
   const razorpayKeyId = "rzp_live_RYSfTyxfbAycrR";
 
   const handlePayment = async () => {
-    const { name, phone, address, city, state, country, zip } = addressInfo;
+    // const { name, phone, address, city, state, country, zip } = addressInfo;
     if (
       deliveryOption === "delivery" &&
-      (!name || !phone || !address || !city || !state || !country || !zip || !selectedOption)
+      (!selectedAddressId)
     ) {
-      return alert("Please fill all delivery details.");
+      return alert("Please select a delivery address.");
     }
+    const selectedAddress = addresses.find(addr => addr.id === selectedAddressId);
     const pick_up = deliveryOption === "delivery" ? 0 : 1;
     try {
       const bodyData = {
         user_id: uid,
         total_amount: finalPrice,
-        newname: name,
-        address,
-        city,
-        state,
-        country,
-        zip_code: zip,
-        phone,
+        newname: selectedAddress.newname,
+        address: selectedAddress.address,
+        city: selectedAddress.city,
+        state: selectedAddress.state,
+        country: selectedAddress.country,
+        zip_code: selectedAddress.zip_code,
+        phone: selectedAddress.phone,
         delivery_time: selectedOption ? selectedOption : selectedPickup,
         coupon_code: couponCode,
         walet_value: walletValue,
@@ -239,8 +300,6 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
         payment_option: paymentOptions.find((opt) => opt.code === paymentMethod)?.id || "",
       };
-      
-      console.log("Order Body Data:", bodyData);
 
       const response = await Api.post("api/create_order/", bodyData);
 
@@ -279,6 +338,21 @@ const CheckoutPage = () => {
     setAddressInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+  // HANDLE SELECT EXISTING ADDRESS
+  const handleSelectAddress = (address) => {
+    setSelectedAddressId(address.id);
+    // setAddressInfo({
+    //   name: address.newname,
+    //   phone: address.phone,
+    //   address: address.address,
+    //   city: address.city,
+    //   state: address.state,
+    //   country: address.country,
+    //   zip: address.zip_code,
+    // });
+    setShowNewAddressForm(false);
+  };
+
   useEffect(()=>{
     setSelectedOption("Within 1hr");
     setSelectedPickup("Within 1hr");
@@ -311,17 +385,91 @@ const CheckoutPage = () => {
 
             {deliveryOption === "delivery" && (
               <div className="address-form">
-                <h5>Add New Address</h5>
-                {Object.entries(addressInfo).map(([key, val]) => (
-                  <input
-                    key={key}
-                    type="text"
-                    name={key}
-                    placeholder={key}
-                    value={val}
-                    onChange={handleChange}
-                  />
-                ))}
+                {/* EXISTING ADDRESSES */}
+                {addresses && addresses.length > 0 && (
+                  <div className="existing-addresses-section">
+                    <h5>Select Existing Address</h5>
+                    <div className="addresses-list">
+                      {addresses.map((address) => (
+                        <div
+                          key={address.id}
+                          className={`address-card ${selectedAddressId === address.id ? "selected" : ""}`}
+                          onClick={() => handleSelectAddress(address)}
+                        >
+                          <div className="address-radio">
+                            <input
+                              type="radio"
+                              name="address-selection"
+                              checked={selectedAddressId === address.id}
+                              onChange={() => handleSelectAddress(address)}
+                            />
+                          </div>
+                          <div className="address-details">
+                            <p className="address-name"><strong>{address.newname}</strong></p>
+                            <p className="address-phone">{address.phone}</p>
+                            <p className="address-text">
+                              {address.address}, {address.city}, {address.state} {address.zip_code}, {address.country}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {!showNewAddressForm && addresses.length < 5 && (
+                  <button
+                    className="add-new-address-btn"
+                    onClick={() => {
+                      setShowNewAddressForm(true);
+                      setSelectedAddressId(null);
+                    }}
+                  >
+                    + Add New Address
+                  </button>
+                )}
+
+                {/* NEW ADDRESS FORM */}
+                { showNewAddressForm && (
+                  <div className="new-address-form">
+                    <h5>{addresses && addresses.length > 0 ? "Add New Address" : "Enter Delivery Address"}</h5>
+                    {Object.entries(addressInfo).map(([key, val]) => (
+                      <input
+                        key={key}
+                        type="text"
+                        name={key}
+                        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                        value={val}
+                        onChange={handleChange}
+                      />
+                    ))}
+                    <div className="address-form-buttons">
+                      <button 
+                        className="save-address-btn"
+                        onClick={saveNewAddress}
+                      >
+                        Save Address
+                      </button>
+                      <button 
+                        className="cancel-address-btn"
+                        onClick={() => {
+                          setShowNewAddressForm(false);
+                          setAddressInfo({
+                            name: "",
+                            phone: "",
+                            address: "",
+                            city: "",
+                            state: "",
+                            country: "",
+                            zip: "",
+                          });
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="delivery-timing">
                   <h5>Select Delivery Timing:</h5>

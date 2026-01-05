@@ -38,7 +38,7 @@ const StyledPagination = styled(Pagination)(() => ({
 }));
 
 function Product({ categoryId, refreshCart }) {
-  const { wishlist, toggleWishlist, wishlistLoading } = useWishlist();
+  const { wishlist, toggleWishlist, wishlistLoading, itemsPage, setItemsPage } = useWishlist();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState([]);
@@ -48,9 +48,9 @@ function Product({ categoryId, refreshCart }) {
   const uid = localStorage.getItem("user_id");
   const navigate = useNavigate();
   const pageSize = 20;
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const totalPages = Math.ceil(products.length / pageSize);
-  const currentData = products.slice((page - 1) * pageSize, page * pageSize);
+  const currentData = products.slice((itemsPage - 1) * pageSize, itemsPage * pageSize);
 
   useEffect(() => {
     getMenu();
@@ -337,8 +337,8 @@ function Product({ categoryId, refreshCart }) {
         <Stack direction="row" justifyContent="center" alignItems="center" sx={{ mt: 4 }}>
           <StyledPagination
             count={totalPages}
-            page={page}
-            onChange={(event, value) => setPage(value)}
+            page={itemsPage}
+            onChange={(event, value) => setItemsPage(value)}
             shape="rounded"
             color="primary"
           />

@@ -7,10 +7,10 @@ function Logout() {
   const handelLogOut = () => {
         localStorage.removeItem("user_id");
         localStorage.removeItem("access_token");
-         localStorage.removeItem("referral_code");
-         localStorage.removeItem("name");
-         localStorage.removeItem("wallet");
-        navigate("/login");
+        localStorage.removeItem("referral_code");
+        localStorage.removeItem("name");
+        localStorage.removeItem("wallet");
+        window.location.href = "/login";
       };
   return (
     <div style={{display:"grid", justifyContent:"center", alignItems:"center",marginTop:200}}>
