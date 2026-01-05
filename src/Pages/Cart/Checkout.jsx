@@ -209,7 +209,7 @@ const CheckoutPage = () => {
         }&used_wallet=0&pick_up=${pickupVal}`
       );
 
-      setBaseTotal(response.data.total_price - response.data.delivery_charge);
+      setBaseTotal(response.data.total_price);
       setPreviousPrice(response.data.previous_price);
 
       if (!couponApply) {
