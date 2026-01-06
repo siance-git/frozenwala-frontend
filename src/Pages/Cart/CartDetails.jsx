@@ -281,7 +281,7 @@ function CartDetails() {
                 <span>Delivery:</span>
                 <strong>₹{deliveryCharge}</strong>
               </div>
-              {
+              {/* {
                 gstRate > 0 &&
                 <>
                   <div className="d-flex justify-content-between">
@@ -289,7 +289,7 @@ function CartDetails() {
                     <strong>₹{gstAmount}</strong>
                   </div>
                 </>
-              }
+              } */}
               <div className="d-flex justify-content-between">
                 <span>Discount:</span>
                 <strong>₹{discountPrice}</strong>
