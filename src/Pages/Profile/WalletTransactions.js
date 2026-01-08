@@ -2,10 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { FiX } from "react-icons/fi";
 import Api from "../Utills/Api";
 
 const WalletTransactions = () => {
   const navigate = useNavigate();
+  const [showAddMoney, setShowAddMoney] = useState(false);
+  const [benefits, setBenefits] = useState([]);
+  const [benefitLoading, setBenefitLoading] = useState(false);
+  const [selectedBenefit, setSelectedBenefit] = useState(null);
+  const [amount, setAmount] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -15,6 +21,24 @@ const WalletTransactions = () => {
     pages: 1
   });
   const [error, setError] = useState(null);
+
+  const getWalletBenefits = async () => {
+    try {
+      setBenefitLoading(true);
+      const res = await Api.get("api/wallet-benefits/");
+      if (res.data.status) {
+        setBenefits(res.data.data || []);
+      }
+    } catch (e) {
+      console.log("Error loading benefits", e);
+    } finally {
+      setBenefitLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getWalletBenefits();
+  }, []);
   
 
   // Fetch wallet transactions from API
@@ -178,6 +202,63 @@ const WalletTransactions = () => {
 
   const summary = calculateSummary();
 
+  const handleAddMoney = async () => {
+    try {
+      const response = await Api.post("api/wallet-order/", { 
+        user_id: localStorage.getItem("user_id"), 
+        amount: amount 
+      });
+
+      if (!response.data.status) return alert("Failed to create order");
+
+      const options = {
+        key: "rzp_test_enEwAJBwuY35MP",
+        amount: response.data.amount,
+        currency: "INR",
+        name: "Frozenwala",
+        description: "Wallet Top-up",
+        order_id: response.data.order_id,
+        handler: async function (paymentResult) {
+          console.log("paymentResult>>>", paymentResult);
+          // This is called on successful payment
+          try {
+            const verify = await Api.post("api/verify-wallet-order/", {
+              razorpay_payment_id: paymentResult.razorpay_payment_id,
+              razorpay_order_id: paymentResult.razorpay_order_id,
+              razorpay_signature: paymentResult.razorpay_signature,
+              user_id: localStorage.getItem("user_id"),
+              amount: amount
+            });
+
+            if (verify.data.status) {
+              alert("Wallet credited successfully!");
+              getWalletTransactions(); // refresh balance
+              setAmount("");
+            } else {
+              alert("Payment failed: " + verify.data.message);
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Error verifying payment.");
+          }
+        },
+        prefill: {
+          name: "Test User",
+          email: "test@example.com"
+        },
+        theme: {
+          color: "#FF6B35"
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to initialize payment");
+    }
+  };
+
   return (
     <div style={{ 
       backgroundColor: "#f5f5f5", 
@@ -241,6 +322,23 @@ const WalletTransactions = () => {
           marginBottom: "30px"
         }}
       >
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowAddMoney(true)}
+          style={{
+            background: "linear-gradient(135deg, #4CAF50, #66BB6A)",
+            color: "#fff",
+            border: "none",
+            padding: "12px 20px",
+            borderRadius: "14px",
+            fontWeight: "700",
+            cursor: "pointer",
+            boxShadow: "0 6px 20px rgba(76,175,80,0.35)"
+          }}
+        >
+          + Add Money
+        </motion.button>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -608,6 +706,137 @@ const WalletTransactions = () => {
           )}
         </>
       )}
+
+      <AnimatePresence>
+        {showAddMoney && (
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 120 }}
+            style={{
+              position: "fixed",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "#fff",
+              borderTopLeftRadius: "24px",
+              borderTopRightRadius: "24px",
+              padding: "24px",
+              boxShadow: "0 -10px 40px rgba(0,0,0,0.15)",
+              zIndex: 999
+            }}
+          >
+            {/* Header */}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: "700" }}>Add Money</h3>
+              <motion.button
+                whileHover={{ rotate: 90, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowAddMoney(false)}
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  backgroundColor: "#f5f5f5",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <FiX size={20} color="#333" />
+              </motion.button>
+            </div>
+
+            {/* Amount Input */}
+            <input
+              type="number"
+              placeholder="Enter amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              style={{
+                width: "100%",
+                marginTop: "16px",
+                padding: "14px",
+                fontSize: "18px",
+                borderRadius: "12px",
+                border: "2px solid #eee",
+                outline: "none"
+              }}
+            />
+
+            {/* Wallet Benefits */}
+            <h4 style={{ margin: "20px 0 10px", fontWeight: "600" }}>
+              Best Offers for You 🎉
+            </h4>
+
+            <div style={{ display: "grid", gap: "12px", maxHeight: "260px", overflowY: "auto", overflowX: "hidden" }}>
+              {benefits && benefits.length > 0 ? benefits.map((b) => (
+                <motion.div
+                  key={b.id}
+                  // whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setSelectedBenefit(b);
+                    setAmount(b.add_amount);
+                  }}
+                  style={{
+                    padding: "14px",
+                    borderRadius: "14px",
+                    border: selectedBenefit?.id === b.id
+                      ? "2px solid #4CAF50"
+                      : "1px solid #eee",
+                    background: "#f9f9f9",
+                    cursor: "pointer"
+                  }}
+                >
+                  <div style={{ fontWeight: "700" }}>
+                    Add ₹{b.add_amount} & get ₹{b.benefit_amount} bonus
+                  </div>
+
+                  {b.influencer && (
+                    <div style={{ fontSize: "12px", color: "#FF6B35" }}>
+                      Influencer Offer • Valid {b.influencer_valid_days} days
+                    </div>
+                  )}
+
+                  <div
+                    style={{ fontSize: "12px", color: "#777" }}
+                    dangerouslySetInnerHTML={{ __html: b.description }}
+                  />
+                </motion.div>
+              ))
+              :
+              <div className="text-center">No offers found</div>
+            }
+            </div>
+
+            {/* Proceed Button */}
+            <motion.button
+              // whileHover={{ scale: 1.05 }}
+              onClick={handleAddMoney}
+              whileTap={{ scale: 0.95 }}
+              disabled={!amount}
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                padding: "16px",
+                fontSize: "16px",
+                fontWeight: "700",
+                borderRadius: "14px",
+                background: "#FF6B35",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer"
+              }}
+            >
+              Proceed to Pay ₹{amount}
+            </motion.button>
+          </motion.div>
+        )}
+        </AnimatePresence>
     </div>
   );
 };
