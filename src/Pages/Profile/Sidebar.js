@@ -133,7 +133,7 @@ import Api from "../Utills/Api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Sidebar = ({ activeButton, onButtonClick }) => {
+const Sidebar = ({ activeButton, onButtonClick, fetchWalletData, wallet }) => {
   const buttons = [
     { id: 1, label: "My Profile" },
     { id: 2, label: "Order History" },
@@ -152,30 +152,7 @@ const Sidebar = ({ activeButton, onButtonClick }) => {
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState("");
   const [loading, setLoading] = useState(true);
-  const [wallet, setWallet] = useState(localStorage.getItem("wallet") || "0.00");
   const navigate = useNavigate();
-
-  // Fetch wallet data
-  const fetchWalletData = async () => {
-    try {
-      const userId = localStorage.getItem("user_id");
-      if (!userId) {
-        throw new Error("User ID not found");
-      }
-      
-      const response = await Api.get(`api/wallet/?user_id=${userId}`);
-      const walletValue = response.data?.wallet_value || 0;
-      
-      // Update state and localStorage
-      setWallet(walletValue.toString());
-      localStorage.setItem("wallet", walletValue.toString());
-      console.log("Wallet updated:", walletValue);
-      
-    } catch (error) {
-      console.error("Error fetching wallet:", error);
-      // Keep existing wallet value on error
-    }
-  };
 
   useEffect(() => {
     const access = localStorage.getItem("access_token");

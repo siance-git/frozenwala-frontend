@@ -62,7 +62,7 @@ import WalletTransactions from "./WalletTransactions";
 import UserQRCode from "./UserQRCode";
 import api, { walletApi } from "../Utills/Api"; // Import wallet API
 
-const MainContent = ({ activeButton }) => {
+const MainContent = ({ activeButton, fetchMyWalletData, wallet }) => {
   const [walletData, setWalletData] = useState(null);
   const [walletLoading, setWalletLoading] = useState(false);
   const [walletError, setWalletError] = useState(null);
@@ -132,7 +132,7 @@ const MainContent = ({ activeButton }) => {
       case 3:
         return (
           <div>
-            <WalletTransactions {...getWalletProps()} />
+            <WalletTransactions {...getWalletProps()} fetchMyWalletData={fetchMyWalletData} wallet={wallet} />
           </div>
         );
       case 4:

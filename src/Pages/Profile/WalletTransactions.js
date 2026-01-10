@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import Api from "../Utills/Api";
 
-const WalletTransactions = () => {
+const WalletTransactions = ({fetchMyWalletData, wallet}) => {
   const navigate = useNavigate();
   const [showAddMoney, setShowAddMoney] = useState(false);
   const [benefits, setBenefits] = useState([]);
@@ -203,10 +203,22 @@ const WalletTransactions = () => {
   const summary = calculateSummary();
 
   const handleAddMoney = async () => {
+    let addAmount = 0;
+    try{
+      addAmount = parseInt(amount);
+    }
+    catch(error){
+      console.error("Invalid amount")
+      alert("Invalid amount!")
+      return;
+    }
+
+    const selected_benefit = benefits.filter((b) => b.add_amount === addAmount)[0];
+
     try {
       const response = await Api.post("api/wallet-order/", { 
         user_id: localStorage.getItem("user_id"), 
-        amount: amount 
+        amount: addAmount
       });
 
       if (!response.data.status) return alert("Failed to create order");
@@ -222,24 +234,28 @@ const WalletTransactions = () => {
           console.log("paymentResult>>>", paymentResult);
           // This is called on successful payment
           try {
+            console.log("selected_benefit>>>>>", selected_benefit)
             const verify = await Api.post("api/verify-wallet-order/", {
               razorpay_payment_id: paymentResult.razorpay_payment_id,
               razorpay_order_id: paymentResult.razorpay_order_id,
               razorpay_signature: paymentResult.razorpay_signature,
               user_id: localStorage.getItem("user_id"),
-              amount: amount
+              amount: addAmount,
+              benefit_id: selected_benefit?.id || null,
             });
 
             if (verify.data.status) {
               alert("Wallet credited successfully!");
               getWalletTransactions(); // refresh balance
               setAmount("");
+              setShowAddMoney(false);
+              fetchMyWalletData()
             } else {
-              alert("Payment failed: " + verify.data.message);
+              alert("Payment failed, please try again.");
             }
           } catch (err) {
             console.error(err);
-            alert("Error verifying payment.");
+            alert("Payment failed, please try again.");
           }
         },
         prefill: {
@@ -255,7 +271,7 @@ const WalletTransactions = () => {
       rzp.open();
     } catch (err) {
       console.error(err);
-      alert("Failed to initialize payment");
+      alert("Payment failed, please try again.");
     }
   };
 
@@ -367,7 +383,7 @@ const WalletTransactions = () => {
             <span style={{ fontSize: "14px", color: "#666" }}>Current Balance</span>
           </div>
           <h3 style={{ fontSize: "28px", fontWeight: "700", color: "#2E7D32", margin: "0" }}>
-            {formatCurrency(summary.currentBalance)}
+            ₹{wallet}
           </h3>
         </motion.div>
 
@@ -613,6 +629,7 @@ const WalletTransactions = () => {
                         <span>Opening: {formatCurrency(transaction.opening_bal)}</span>
                         <span>•</span>
                         <span>Closing: {formatCurrency(transaction.closing_bal)}</span>
+                        {transaction.wallet_benefit && <span>Extra: {formatCurrency(transaction.wallet_benefit)}</span>}
                       </div>
                     </div>
                   </motion.div>

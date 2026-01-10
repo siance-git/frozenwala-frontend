@@ -5,15 +5,38 @@ import MainContent from "../Profile/MainContent";
 import Navbar from "../Home/Navbar";
 import Footer from "../Home/Footer";
 import { FiArrowLeft } from "react-icons/fi";
+import Api from "../Utills/Api";
 
 const App = () => {
   const {id} = useParams();
   const [activeButton, setActiveButton] = useState(id ? parseInt(id) : 1);
   const navigate = useNavigate();
   const location = useLocation();
+  const [wallet, setWallet] = useState(localStorage.getItem("wallet") || "0.00");
 
   const handleButtonClick = (buttonId) => {
     setActiveButton(buttonId);
+  };
+
+  const fetchWalletData = async () => {
+    try {
+      const userId = localStorage.getItem("user_id");
+      if (!userId) {
+        throw new Error("User ID not found");
+      }
+      
+      const response = await Api.get(`api/wallet/?user_id=${userId}`);
+      const walletValue = response.data?.wallet_value || 0;
+      
+      // Update state and localStorage
+      setWallet(walletValue.toString());
+      localStorage.setItem("wallet", walletValue.toString());
+      console.log("Wallet updated:", walletValue);
+      
+    } catch (error) {
+      console.error("Error fetching wallet:", error);
+      // Keep existing wallet value on error
+    }
   };
 
   // Scroll to top when component mounts
@@ -40,6 +63,8 @@ const App = () => {
             <Sidebar
               activeButton={activeButton}
               onButtonClick={handleButtonClick}
+              fetchWalletData={fetchWalletData}
+              wallet={wallet}
             />
             <button
                       onClick={handleBack}
@@ -48,7 +73,7 @@ const App = () => {
                       <FiArrowLeft />
                       <span className="back-text">Back</span>
                     </button>
-            <MainContent activeButton={activeButton} />
+            <MainContent activeButton={activeButton} fetchMyWalletData={fetchWalletData} wallet={wallet} />
           </div>
           <Footer />
         </main>
