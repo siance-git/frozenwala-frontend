@@ -10,7 +10,7 @@
 
 .popular-img {
   height: 250px;
-  object-fit: cover;
+  object-fit: fill;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -86,7 +86,7 @@
 
 .popular-img {
   height: 200px !important;
-  object-fit: cover;
+  object-fit: fill;
 }
 
 /* 🌸 Flower-style Sold Out Badge */
