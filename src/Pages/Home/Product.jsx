@@ -37,18 +37,15 @@ const StyledPagination = styled(Pagination)(() => ({
   },
 }));
 
-function Product({ categoryId, refreshCart }) {
+function Product({ refreshCart, getProducts, getAllProducts, products, categoryCounts }) {
   const { wishlist, toggleWishlist, wishlistLoading, itemsPage, setItemsPage } = useWishlist();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [products, setProducts] = useState([]);
   const [cartItems, setCartItems] = useState({});
   const [stock, setStock] = useState({});
-  const [categoryCounts, setCategoryCounts] = useState({});
   const uid = localStorage.getItem("user_id");
   const navigate = useNavigate();
   const pageSize = 20;
-  // const [page, setPage] = useState(1);
   const totalPages = Math.ceil(products.length / pageSize);
   const currentData = products.slice((itemsPage - 1) * pageSize, itemsPage * pageSize);
 
@@ -57,11 +54,6 @@ function Product({ categoryId, refreshCart }) {
     getStock();
     getCartItems();
   }, []);
-
-  useEffect(() => {
-    if (categoryId) getProducts(categoryId);
-    else getAllProducts();
-  }, [categoryId]);
 
   const getMenu = async () => {
     try {
@@ -78,32 +70,6 @@ function Product({ categoryId, refreshCart }) {
     setSelectedCategory(categoryId);
     if (categoryId === "all") getAllProducts();
     else getProducts(categoryId);
-  };
-
-  const getProducts = async (categoryId) => {
-    try {
-      const response = await axios.get(
-        `https://backend.frozenwala.com/api/auth/category/product-all/?category_id=${categoryId}`
-      );
-      setProducts(response.data);
-      setCategoryCounts((prev) => ({
-        ...prev,
-        [categoryId]: response.data.length,
-      }));
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  const getAllProducts = async () => {
-    try {
-      const response = await axios.get(
-        `https://backend.frozenwala.com/api/auth/product-all/`
-      );
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error fetching all products:", error);
-    }
   };
 
   const getCartItems = async () => {

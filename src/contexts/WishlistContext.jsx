@@ -7,6 +7,7 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [itemsPage, setItemsPage] = useState(1);
+  const [products, setProducts] = useState([]);
 
   const toggleWishlist = async (item) => {
     try{
@@ -83,7 +84,9 @@ export const WishlistProvider = ({ children }) => {
       toggleWishlist, 
       wishlistLoading,
       itemsPage,
-      setItemsPage
+      setItemsPage,
+      products,
+      setProducts
     }}>
       {children}
     </WishlistContext.Provider>

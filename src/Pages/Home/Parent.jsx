@@ -1,24 +1,48 @@
-import React, { useState } from 'react';
-import Menu from './Menu';
+import React, { useEffect, useState } from 'react';
 import Product from './Product';
 import Popular from './Popular';
 import DealsOfTheDay from './DealsOfTheDay.jsx';
 import Recommended from './Recommended.jsx';
 import Slider from "react-slick";
+import axios from 'axios';
+import { useWishlist } from "../../contexts/WishlistContext";
 
 function ParentComponent({refRestCart,uid, advertisements, loadingAds, adError, adSettings}) {
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const { products, setProducts } = useWishlist();
 
-  const handleCategorySelect = (categoryId) => {
-    setSelectedCategoryId(categoryId);
+  const getProducts = async (categoryId) => {
+    try {
+      const response = await axios.get(
+        `https://backend.frozenwala.com/api/auth/category/product-all/?category_id=${categoryId}`
+      );
+      setProducts(response.data);
+      setCategoryCounts((prev) => ({
+        ...prev,
+        [categoryId]: response.data.length,
+      }));
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   };
-  const access = localStorage.getItem("access_token");
+
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get(
+        `https://backend.frozenwala.com/api/auth/product-all/`
+      );
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching all products:", error);
+    }
+  };
+
+  useEffect(() => {
+    getAllProducts();
+  }, []);
 
   return (
     <div>
-   {/* {access && <Recommended refreshCart={refRestCart} access={access} uid={uid}/>}   
-   {access && <DealsOfTheDay refreshCart={refRestCart} access={access} uid={uid}/>}   
-   {access && <Popular refreshCart={refRestCart} access={access} uid={uid}/>}    */}
   <Recommended refreshCart={refRestCart}  uid={uid}/>  
   <DealsOfTheDay refreshCart={refRestCart}  uid={uid}/>  
   <Popular refreshCart={refRestCart}  uid={uid}/> 
@@ -73,8 +97,7 @@ function ParentComponent({refRestCart,uid, advertisements, loadingAds, adError, 
               </div>
             </div>
           )}
-      {/* <Menu onSelectCategory={handleCategorySelect} access={access} uid={uid}/> */}
-      <Product categoryId={selectedCategoryId} refreshCart={refRestCart}  uid={uid} />
+      <Product refreshCart={refRestCart} getProducts={getProducts} getAllProducts={getAllProducts} products={products} categoryCounts={categoryCounts} />
     </div>
   );
 }
