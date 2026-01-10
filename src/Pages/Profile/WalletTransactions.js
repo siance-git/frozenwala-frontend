@@ -223,6 +223,8 @@ const WalletTransactions = ({fetchMyWalletData, wallet}) => {
 
       if (!response.data.status) return alert("Failed to create order");
 
+      const name = localStorage.getItem("name");
+
       const options = {
         key: "rzp_test_enEwAJBwuY35MP",
         amount: response.data.amount,
@@ -259,7 +261,7 @@ const WalletTransactions = ({fetchMyWalletData, wallet}) => {
           }
         },
         prefill: {
-          name: "Test User",
+          name: name,
           email: "test@example.com"
         },
         theme: {
