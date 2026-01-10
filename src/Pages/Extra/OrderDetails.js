@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Api from "../Utills/Api";
 import "./OrderDetails.css";
 import html2pdf from "html2pdf.js";
+import logo from "../../Frozenwala.png";
 
 const OrderDetails = () => {
   const { orderId } = useParams();
@@ -86,57 +87,33 @@ const OrderDetails = () => {
   }, [orderId]);
 
   const generatePDF = async () => {
-    const element = document.getElementById("orderContainer");
+    try {
+      const response = await Api.get(
+        `api/order/${orderId}/invoice/`,
+        {
+          responseType: "blob",
+        }
+      );
 
-    html2pdf()
-      .from(element)
-      .set({
-        margin: 10,
-        filename: `invoice_${orderId}.pdf`,
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      })
-      .save();
-    // try {
-    //   const config = {
-    //     headers: { Accept: "application/pdf" },
-    //     responseType: "blob",
-    //   };
-    //   const response = await Api.get(
-    //     `api/generate_invoice/?order_id=${orderId}`,
-    //     config
-    //   );
-    //   const url = window.URL.createObjectURL(new Blob([response.data]));
-    //   const link = document.createElement("a");
-    //   link.href = url;
-    //   link.setAttribute("download", `invoice_${orderId}.pdf`);
-    //   document.body.appendChild(link);
-    //   link.click();
-    // } catch (error) {
-    //   console.log("Error fetching pdf:", error);
-    // }
-  };
+      const pdfBlob = new Blob([response.data], {
+        type: "application/pdf",
+      });
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "1":
-        return { text: "Pending", color: "#FF9800" };
-      case "2":
-        return { text: "Confirm", color: "#03A9F4" };
-      case "3":
-        return { text: "Picked Up", color: "#4CAF50" };
-      case "4":
-        return { text: "Delivered", color: "#8BC34A" };
-      case "5":
-        return { text: "Cancel", color: "#F44336" };
-      case "6":
-        return { text: "Return Request", color: "#9E9E9E" };
-      default:
-        return { text: "Accepted", color: "#9C27B0" };
+      const url = window.URL.createObjectURL(pdfBlob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `invoice_${orderId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error("Error fetching pdf:", error);
     }
   };
-
-  const { text, color } = getStatusColor(statusText);
 
   return (
     <div className="order-wrapper">
@@ -165,7 +142,7 @@ const OrderDetails = () => {
           {/* Header */}
           <div className="receipt-header">
             <div className="company-logo text-center">
-              <img src="/img/gallery/Frozenwala1.png" />
+              <img src={logo} />
             </div>
             <div className="receipt-brand">{sellerAddress?.newname || "-"}</div>
             {/* <div className="receipt-company">(MEGASFROZEN GOODS PVT. LTD.)</div> */}
