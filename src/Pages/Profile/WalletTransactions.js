@@ -628,10 +628,10 @@ const WalletTransactions = ({fetchMyWalletData, wallet}) => {
                         display: "flex",
                         gap: "8px"
                       }}>
-                        <span>Opening: {formatCurrency(transaction.opening_bal)}</span>
+                        {/* <span>Opening: {formatCurrency(transaction.opening_bal)}</span>
                         <span>•</span>
-                        <span>Closing: {formatCurrency(transaction.closing_bal)}</span>
-                        {transaction.wallet_benefit && <span>Extra: {formatCurrency(transaction.wallet_benefit)}</span>}
+                        <span>Closing: {formatCurrency(transaction.closing_bal)}</span> */}
+                        {transaction.wallet_benefit > 0 && <span>Extra: {formatCurrency(transaction.wallet_benefit)}</span>}
                       </div>
                     </div>
                   </motion.div>

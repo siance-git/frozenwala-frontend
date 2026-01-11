@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaHeart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
+import logo from "../../Frozenwala.png";
 
 import axios from "axios"
 import {
@@ -122,7 +123,7 @@ function NavbarComponent({ refreshCart }) {
             style={{ cursor: "pointer",flexDirection:"column" }}
           >
             <img
-              src="/img/gallery/Frozenwala1.png"
+              src={logo}
               alt="logo"
               style={{ height: "40px", width: "100px" }}
               className="d-inline-block"

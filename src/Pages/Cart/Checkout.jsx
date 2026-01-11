@@ -99,6 +99,10 @@ const CheckoutPage = () => {
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loadingCoupons, setLoadingCoupons] = useState(false);
 
+  // PURCHASE BENEFITS
+  const [purchaseBenefits, setPurchaseBenefits] = useState([]);
+  const [loadingBenefits, setLoadingBenefits] = useState(false);
+
   // PRICE STATES
   const [baseTotal, setBaseTotal] = useState(0);
   const [previousPrice, setPreviousPrice] = useState(0);
@@ -165,6 +169,7 @@ const CheckoutPage = () => {
     getProducts();
     getTotalPrice();
     fetchAvailableCoupons();
+    fetchPurchaseBenefits();
     fetchPaymentOptions();
     fetchCustomerAddresses();
   }, [pickup]);
@@ -197,6 +202,21 @@ const CheckoutPage = () => {
       console.error("Error fetching coupons:", error);
     } finally {
       setLoadingCoupons(false);
+    }
+  };
+
+  // FETCH PURCHASE BENEFITS
+  const fetchPurchaseBenefits = async () => {
+    setLoadingBenefits(true);
+    try {
+      const response = await Api.get("api/purchase-benefits/");
+      if (response.data.status === true) {
+        setPurchaseBenefits(response.data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching purchase benefits:", error);
+    } finally {
+      setLoadingBenefits(false);
     }
   };
 
@@ -569,7 +589,7 @@ const CheckoutPage = () => {
           <div className="price-summary">
             {/* AVAILABLE COUPONS */}
             <div className="available-coupons-section">
-              <h4>Available Offers</h4>
+              <h4>Available Coupon Offers</h4>
               {loadingCoupons ? (
                 <div className="coupon-loading">Loading offers...</div>
               ) : availableCoupons.length > 0 ? (
@@ -611,6 +631,32 @@ const CheckoutPage = () => {
               )}
 
               <p className="coupon-hint">👆 Click on any coupon to copy, then click Apply</p>
+            </div>
+
+            {/* PURCHASE BENEFITS */}
+            <div className="purchase-benefits-section">
+              <h4>Purchase Benefits</h4>
+              {loadingBenefits ? (
+                <div className="benefit-loading">Loading benefits...</div>
+              ) : purchaseBenefits.length > 0 ? (
+                <div className="benefit-cards-container">
+                  {purchaseBenefits.map((benefit, index) => (
+                    <div className="benefit-card" key={benefit.id}>
+                      <div className="benefit-header">
+                        <span className="benefit-title">Spend ₹{benefit.price}</span>
+                        <span className="benefit-badge">{benefit.benefit_percentage}%</span>
+                      </div>
+                      <div className="benefit-body">
+                        <p className="benefit-description">
+                          Get {benefit.benefit_percentage}% benefit on your purchase
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="no-benefits">No purchase benefits available at the moment</div>
+              )}
             </div>
 
             {/* COUPON INPUT */}

@@ -776,3 +776,92 @@ h3, h4 h5{
 .cancel-address-btn:hover {
   background: #e8e8e8;
 }
+
+/* Purchase Benefits Section */
+.purchase-benefits-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+  border-radius: 12px;
+  border: 1px solid #c6f6d5;
+}
+
+.purchase-benefits-section h4 {
+  margin: 0 0 15px 0;
+  color: #38a169;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.benefit-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.benefit-card {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 15px;
+  border: 2px solid #38a169;
+  position: relative;
+  overflow: hidden;
+}
+
+.benefit-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #38a169, #68d391);
+}
+
+.benefit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.benefit-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #38a169;
+  background: #f0fff4;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.benefit-badge {
+  background: #38a169;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.benefit-body {
+  margin: 8px 0;
+}
+
+.benefit-description {
+  font-size: 14px;
+  color: #2d3748;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.benefit-loading,
+.no-benefits {
+  text-align: center;
+  padding: 20px;
+  color: #68d391;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #c6f6d5;
+}
